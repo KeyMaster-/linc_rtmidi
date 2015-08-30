@@ -49,13 +49,13 @@ extern class RtMidiIn {
     @:native('ignoreTypes')
     function ignoreTypes(midiSysex:Bool = true, midiTime:Bool = true, midiSense:Bool = true):Void;
 
-    inline function getMessage(into:haxe.io.BytesData):Int {
+    inline function getMessage(into:haxe.io.BytesData):Float {
         untyped __cpp__("std::vector<unsigned char> msg"); //possible var name conflict
         untyped __cpp__("double stamp"); //possible var name conflict
         untyped __cpp__("stamp = {0}->getMessage(&msg)", this);
         untyped __cpp__("{0}->__SetSize(msg.size());", into); //msg.size() could be put into an int, but more name conflicts possible then
         untyped __cpp__("for(int i=0; i<msg.size(); i++) {0}->__unsafe_set(i, msg[i]);", into);
-        return untyped __cpp__("stamp");
+        return cast untyped __cpp__("stamp");
     }
 
     // function setErrorCallback(callback:RtMidiErrorCallback):Void
