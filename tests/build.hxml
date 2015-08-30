@@ -1,0 +1,8 @@
+-main Test.hx
+-cpp cpp/
+-cp ../
+-debug
+-cmd cpp/Test-debug
+-D no-simplify
+-D no-debug
+-D mac

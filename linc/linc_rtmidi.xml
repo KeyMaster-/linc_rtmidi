@@ -1,0 +1,20 @@
+<xml>
+    <files id="linc_rtmidi">
+        <compilerflag value="-D__MACOSX_CORE__" if="mac"/>
+        <file name="${LINC_RTMIDI_PATH}/lib/rtmidi/RtMidi.cpp"/>
+    </files>
+
+    <files id="haxe">
+        <compilerflag value="-I${LINC_RTMIDI_PATH}/linc"/>
+    </files>
+
+    <target id="haxe">
+        <files id="linc_rtmidi"/>
+
+        <section if="mac">
+            <vflag name="-framework" value="CoreMIDI" />
+            <vflag name="-framework" value="CoreFoundation" />
+            <vflag name="-framework" value="CoreAudio" />
+        </section>
+    </target>
+</xml>
