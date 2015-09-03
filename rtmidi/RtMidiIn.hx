@@ -24,14 +24,6 @@ extern class RtMidiIn extends RtMidi {
     inline function openVirtualPort(portName:String = "RtMidi Input"):Void _openVirtualPort(cast portName);
 
     inline function setCallback(cb:Callback, userData:Dynamic):Void {
-        // if(!RtMidiIn_helper.internal_cb_set) {
-        //     RtMidiIn_helper.internal_cb_set = true;
-        //     init_callback(cpp.Callable.fromStaticFunction(RtMidiIn_helper.internal_callback));
-        // }
-
-        // var id = RtMidiIn_helper.set_callback(cb, userData);
-
-        // set_callback(this, id);
         RtMidiIn_helper.set_callback(this, cb, userData);
     }
 
@@ -41,8 +33,6 @@ extern class RtMidiIn extends RtMidi {
     @:native('linc::rtmidi::set_callback') //:todo: possibly just turn this into an @:native or untyped __cpp__ (it's one line)
     private static function set_callback(midiin:RtMidiIn, id:Int):Void;
 
-    // @:native('get_raw()->cancelCallback')
-    // function cancelCallback():Void; //change to use helper
     inline function cancelCallback():Void {
         RtMidiIn_helper.cancel_callback(this);
     }

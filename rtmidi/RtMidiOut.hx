@@ -5,7 +5,7 @@ import rtmidi.RtMidi.Api;
 @:native('::cpp::Pointer<RtMidiOut>')
 extern class RtMidiOut extends RtMidi {
     static inline function create(api:Api = Api.UNSPECIFIED, clientName:String = "RtMidi Output Client"):RtMidiOut {
-        return cast untyped __cpp__("new RtMidiOut((RtMidi::Api)({0}), (const ::cpp::Char *)({1}))", api, clientName);
+        return cast untyped __cpp__("::cpp::Pointer<RtMidiOut>(new RtMidiOut((RtMidi::Api)({0}), (const ::cpp::Char *)({1})))", api, clientName);
     }
 
     inline function destroy():Void {
