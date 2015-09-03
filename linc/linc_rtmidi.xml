@@ -1,11 +1,16 @@
 <xml>
     <files id="linc_rtmidi">
         <compilerflag value="-D__MACOSX_CORE__" if="mac"/>
+        <compilerflag value="-I${LINC_RTMIDI_PATH}/linc"/>
         <file name="${LINC_RTMIDI_PATH}/lib/rtmidi/RtMidi.cpp"/>
         <file name="${LINC_RTMIDI_PATH}/linc/linc_rtmidi.cpp"/>
     </files>
 
     <files id="haxe">
+        <compilerflag value="-I${LINC_RTMIDI_PATH}/linc"/>
+    </files>
+
+    <files id="__main__">
         <compilerflag value="-I${LINC_RTMIDI_PATH}/linc"/>
     </files>
 

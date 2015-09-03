@@ -6,11 +6,9 @@
 
 namespace linc {
     namespace rtmidi {
-        typedef ::cpp::Function < Void(int) > InternalInputCallbackFN;
-        extern void set_callback(RtMidiIn* midiin);
+        typedef ::cpp::Function < Void(Float, Array<unsigned char>, int) > InternalInputCallbackFN;
+        extern void set_callback(::cpp::Pointer<RtMidiIn> midiin, int id);
         extern void init_callback(InternalInputCallbackFN callback);
-        // extern void set_input_callback( RtMidiIn* midiin, InternalTimerCallbackFN fn );
-         // void InternalInputCallback(double delta, std::vector< unsigned char > *message, void * userData);
     }
 }
 
