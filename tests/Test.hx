@@ -13,9 +13,9 @@ class Test {
 
     static function main() {
         trace(RtMidi.getVersion());
-        var apis_ = RtMidi.getCompiledApi();
+        var apis = RtMidi.getCompiledApi();
         trace('The following APIs are available:');
-        for(api in apis_) {
+        for(api in apis) {
             switch(api) {
                 case Api.UNSPECIFIED:
                     trace('Unspecified');
@@ -47,6 +47,15 @@ class Test {
 
         midiin.openPort(0);
         midiout.openPort(0);
+
+        // var midi:RtMidi = untyped __cpp__( "{0}->reinterpret( )", midiin);
+        // var midi:RtMidi = midiin;
+        // var dyn:Dynamic = midiin;
+        // var midi:RtMidi = dyn;
+        // trace(midi.getPortCount());
+
+        // midiin.openVirtualPort();
+        // midiout.openVirtualPort();
 
         var buttonActivated:Array<Bool> = [for(i in 0...72) false];
 
@@ -120,6 +129,9 @@ class Test {
             buttonActivated);
 
         while(!done) {}
+
+        // var t = haxe.Timer.stamp();
+        // while(haxe.Timer.stamp() - t < 5) {}
 
         midiin.cancelCallback();
 

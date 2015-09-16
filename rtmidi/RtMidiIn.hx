@@ -47,7 +47,7 @@ extern class RtMidiIn extends RtMidi {
     function isPortOpen():Bool;
 
     @:native('get_raw()->getPortCount')
-    function getPortCount():UInt;
+    override function getPortCount():UInt;
 
     inline function getPortName(portNumber:UInt = 0):String {
         return cast untyped __cpp__("{0}->get_raw()->getPortName({1}).c_str()", this, portNumber);
