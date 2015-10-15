@@ -41,7 +41,7 @@ extern class ExternRtMidiIn extends RtMidi {
 
     inline function getMessage(message:haxe.io.BytesData):Float {
         untyped __cpp__("std::vector<unsigned char> __msg");
-        untyped __cpp__("double __stamp = {0}->getMessage(&__msg)", this);
+        untyped __cpp__("double __stamp = {0}->get_raw()->getMessage(&__msg)", this);
         untyped __cpp__("int __msgSize = __msg.size()");
         untyped __cpp__("{0}->__SetSize(__msgSize)", message);
         untyped __cpp__("memcpy({0}->GetBase(), __msg.data(), __msgSize)", message);

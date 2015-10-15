@@ -1,8 +1,8 @@
--main Test.hx
+-main Main.hx
 -cpp cpp/
--cp ../
+-cp ../../../
 -debug
--cmd cpp/Test-debug
+-cmd cpp/Main-debug
 -D no-simplify
 -D no-debug
 -D mac

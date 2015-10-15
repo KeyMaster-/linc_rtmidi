@@ -1,6 +1,7 @@
 <xml>
     <files id="linc_rtmidi">
         <compilerflag value="-D__MACOSX_CORE__" if="mac"/>
+        <compilerflag value="-D__LINUX_ALSA__" if="linux"/>
         <compilerflag value="-I${LINC_RTMIDI_PATH}/linc"/>
         <file name="${LINC_RTMIDI_PATH}/lib/rtmidi/RtMidi.cpp"/>
         <file name="${LINC_RTMIDI_PATH}/linc/linc_rtmidi.cpp"/>
@@ -21,6 +22,11 @@
             <vflag name="-framework" value="CoreMIDI" />
             <vflag name="-framework" value="CoreFoundation" />
             <vflag name="-framework" value="CoreAudio" />
+        </section>
+
+        <section if="linux">
+            <vflag name="-lasound" value="" />
+            <vflag name="-lpthread" value="" />
         </section>
     </target>
 </xml>

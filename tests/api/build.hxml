@@ -1,0 +1,8 @@
+-main Main.hx
+-cpp cpp/
+-cp ../../
+-debug
+-cmd cpp/Main-debug
+-D no-simplify
+-D no-debug
+-D mac
