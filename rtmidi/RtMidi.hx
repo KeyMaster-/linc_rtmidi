@@ -21,12 +21,24 @@ extern class RtMidi {
         return apis;
     }
 
-    //problems with representing the inheritance: declaring a function signature which is overriden by the subclass
-    // doesn't seem to work, haxe does not use the subclass function.
+    @:native('get_raw()->openPort')
+    private function _openPort(portNumber:UInt = 0, portName:cpp.ConstCharStar):Void;
+    inline function openPort(portNumber:UInt = 0, portName:String = "RtMidi"):Void _openPort(portNumber, cast portName);
 
-    // function openPort(portNumber:UInt = 0, portName:String = "RtMidi");
+    @:native('get_raw()->openVirtualPort')
+    private function _openVirtualPort(portName:cpp.ConstCharStar):Void;
+    inline function openVirtualPort(portName:String = "RtMidi"):Void return _openVirtualPort(cast portName);
 
-    function getPortCount():UInt {}
+    @:native('get_raw()->getPortCount')
+    public function getPortCount():UInt;
+
+    inline function getPortName(portNumber:UInt = 0):String return cast untyped __cpp__("{0}->get_raw()->getPortName({1}).c_str()", this, portNumber);
+
+    @:native('get_raw()->closePort')
+    function closePort():Void;
+
+    @:native('get_raw()->isPortOpen')
+    function isPortOpen():Bool;
 }
 
 @:enum

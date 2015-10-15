@@ -32,8 +32,8 @@ class Test {
             }
         }
 
-        var midiin:RtMidiIn = RtMidiIn.create();
-        var midiout:RtMidiOut = RtMidiOut.create();
+        var midiin = new RtMidiIn();
+        var midiout = new RtMidiOut();
 
         var b = haxe.io.Bytes.alloc(3).getData();
 
@@ -45,17 +45,16 @@ class Test {
             trace('Input Port #${i+1}: $portName');
         }
 
+        if(nPorts == 0)  {
+            trace('No ports available, exiting!');
+            midiin.destroy();
+            midiout.destroy();
+            return;
+        }
+
+
         midiin.openPort(0);
         midiout.openPort(0);
-
-        // var midi:RtMidi = untyped __cpp__( "{0}->reinterpret( )", midiin);
-        // var midi:RtMidi = midiin;
-        // var dyn:Dynamic = midiin;
-        // var midi:RtMidi = dyn;
-        // trace(midi.getPortCount());
-
-        // midiin.openVirtualPort();
-        // midiout.openVirtualPort();
 
         var buttonActivated:Array<Bool> = [for(i in 0...72) false];
 
