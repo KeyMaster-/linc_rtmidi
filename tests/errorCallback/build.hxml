@@ -1,5 +1,5 @@
 -main Main.hx
 -cpp cpp/
--cp ../../../
+-cp ../../
 -cmd cpp/Main
 -D mac

@@ -1,8 +1,11 @@
 import rtmidi.RtMidiIn;
 import rtmidi.RtMidiOut;
 
-class Main {
+    #if (!mac && !android && !ios && !linux && !windows)
+        #error "You should define a target, please read and modify build.hxml"
+    #end
 
+class Main {
     static function main() {
         var midiin = new RtMidiIn();
         
@@ -23,7 +26,7 @@ class Main {
         var message:haxe.io.Bytes = haxe.io.Bytes.alloc(3);
         while(true) {
             midiin.getMessage(message.getData());
-            if(message.getData().length > 0) { //:todo: fix this?
+            if(message.getData().length > 0) {
                 if(message.get(2) == 0) continue; //ignore button up
 
                 var key = message.get(1);
@@ -50,6 +53,7 @@ class Main {
                 trace('row: $row, column: $column');
             }
         }
+        
         //Turn the whole launchpad off
         message.set(0, 176);
         message.set(1, 0);
@@ -59,4 +63,4 @@ class Main {
         midiout.destroy();
         midiin.destroy();
     } //main
-} //Test
+} //Main

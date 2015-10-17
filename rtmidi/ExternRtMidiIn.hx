@@ -4,12 +4,10 @@ import rtmidi.RtMidi.Api;
 @:include('linc_rtmidi.h')
 @:native('::cpp::Pointer<RtMidiIn>')
 extern class ExternRtMidiIn extends RtMidi {
-    static inline function create(api:Api = Api.UNSPECIFIED, clientName:String = "RtMidi Input Client", queueSizeLimit:UInt = 100):ExternRtMidiIn {
-        return _create(api, clientName, queueSizeLimit);
-    }
+    static inline function create(api:Api = Api.UNSPECIFIED, clientName:String = "RtMidi Input Client", queueSizeLimit:UInt = 100):ExternRtMidiIn return _create(api, cast clientName, queueSizeLimit);
 
     private static inline function _create(api:Api, clientName:cpp.ConstCharStar, queueSizeLimit:UInt):ExternRtMidiIn {
-        return cast untyped __cpp__("::cpp::Pointer<RtMidiIn>(new RtMidiIn((RtMidi::Api)({0}), {1}, {2}))", api, clientName, queueSizeLimit); //:todo: manual cast to ConstCharStar okay?
+        return cast untyped __cpp__("::cpp::Pointer<RtMidiIn>(new RtMidiIn((RtMidi::Api)({0}), {1}, {2}))", api, clientName, queueSizeLimit);
     }
 
     inline function destroy():Void {
@@ -21,11 +19,11 @@ extern class ExternRtMidiIn extends RtMidi {
     function getCurrentApi():Api;
 
     inline function setCallback(cb:InputCallback, userData:Dynamic):Void {
-        RtMidiIn_helper.set_input_callback(this, cb, userData);
+        RtMidiInHelper.setInputCallback(this, cb, userData);
     }
 
     inline function cancelCallback():Void {
-        RtMidiIn_helper.cancel_callback(this);
+        RtMidiInHelper.cancelCallback(this);
     }
 
     @:native('get_raw()->ignoreTypes')
@@ -42,13 +40,13 @@ extern class ExternRtMidiIn extends RtMidi {
 
         // Internal
     @:native('get_raw()->cancelCallback')
-    private function cancel_callback():Void;
+    private function cancelInternalCallback():Void;
 
-    @:native('linc::rtmidi::init_input_callback')
-    private static function init_input_callback(cb:cpp.Callable<Float->haxe.io.BytesData->Int->Void>):Void;
+    @:native('linc::rtmidi::initInputCallback')
+    private static function initInternalInputCallback(cb:cpp.Callable<Float->haxe.io.BytesData->Int->Void>):Void;
 
-    @:native('linc::rtmidi::set_input_callback') //:todo: possibly just turn this into an @:native or untyped __cpp__ (it's one line)
-    private static function set_input_callback(midiin:RtMidiIn, id:Int):Void;
+    @:native('linc::rtmidi::setInputCallback') //:todo: possibly just turn this into an @:native or untyped __cpp__ (it's one line)
+    private static function setInternalInputCallback(midiin:RtMidiIn, id:Int):Void;
 
 }
 
@@ -62,22 +60,22 @@ private typedef InternalCallbackInfo = {
 
 @:allow(rtmidi.ExternRtMidiIn)
 @:include('linc_rtmidi.h')
-private class RtMidiIn_helper {
+private class RtMidiInHelper {
     static var callbacks:Map<Int, InternalCallbackInfo> = new Map();
-    static var internal_cb_set:Bool = false;
+    static var internalCallbackSet:Bool = false;
     static var nextID:Int = 0;
 
-    static function internal_callback(delta:Float, message:haxe.io.BytesData, id:Int):Void {
-        var cb_info = callbacks.get(id);
-        if(cb_info != null) {
-            cb_info.callback(delta, message, cb_info.userData);
+    static function internalCallback(delta:Float, message:haxe.io.BytesData, id:Int):Void {
+        var callbackInfo = callbacks.get(id);
+        if(callbackInfo != null) {
+            callbackInfo.callback(delta, message, callbackInfo.userData);
         }
     }
 
-    static function set_input_callback(midiin:ExternRtMidiIn, cb:InputCallback, userData:Dynamic):Void {
-        if(!internal_cb_set) {
-            internal_cb_set = true;
-            @:privateAccess ExternRtMidiIn.init_input_callback(cpp.Callable.fromStaticFunction(internal_callback));
+    static function setInputCallback(midiin:ExternRtMidiIn, cb:InputCallback, userData:Dynamic):Void {
+        if(!internalCallbackSet) {
+            internalCallbackSet = true;
+            @:privateAccess ExternRtMidiIn.initInternalInputCallback(cpp.Callable.fromStaticFunction(internalCallback));
         }
 
         callbacks.set(nextID, {
@@ -86,15 +84,15 @@ private class RtMidiIn_helper {
             midiObj:midiin
         });
 
-        @:privateAccess ExternRtMidiIn.set_input_callback(midiin, nextID);
+        @:privateAccess ExternRtMidiIn.setInternalInputCallback(midiin, nextID);
         nextID++;
     }
 
-    static function cancel_callback(midiin:ExternRtMidiIn):Void {
+    static function cancelCallback(midiin:ExternRtMidiIn):Void {
         for(key in callbacks.keys()) {
-            var val:ExternRtMidiIn = callbacks.get(key).midiObj;
-            if(val == midiin) {
-                @:privateAccess midiin.cancel_callback();
+            var midiObj:ExternRtMidiIn = callbacks.get(key).midiObj;
+            if(midiObj == midiin) {
+                @:privateAccess midiin.cancelInternalCallback();
                 callbacks.remove(key);
                 return;
             }

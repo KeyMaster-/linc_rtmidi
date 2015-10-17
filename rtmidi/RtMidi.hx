@@ -27,12 +27,14 @@ extern class RtMidi {
 
     @:native('get_raw()->openVirtualPort')
     private function _openVirtualPort(portName:cpp.ConstCharStar):Void;
-    inline function openVirtualPort(portName:String = "RtMidi"):Void return _openVirtualPort(cast portName);
+    inline function openVirtualPort(portName:String = "RtMidi"):Void _openVirtualPort(cast portName);
 
     @:native('get_raw()->getPortCount')
     public function getPortCount():UInt;
 
-    inline function getPortName(portNumber:UInt = 0):String return cast untyped __cpp__("{0}->get_raw()->getPortName({1}).c_str()", this, portNumber);
+    inline function getPortName(portNumber:UInt = 0):String {
+        return cast untyped __cpp__("{0}->get_raw()->getPortName({1}).c_str()", this, portNumber);
+    }
 
     @:native('get_raw()->closePort')
     function closePort():Void;
@@ -41,18 +43,18 @@ extern class RtMidi {
     function isPortOpen():Bool;
 
     inline function setErrorCallback(?cb:ErrorCallback):Void {
-        RtMidi_helper.set_error_callback(cb);
+        RtMidiHelper.setErrorCallback(cb);
     }
 
         // Internal
-    @:native('linc::rtmidi::init_error_callback')
-    private static function init_error_callback(cb:cpp.Callable<ErrorType->String->Void>):Void;
+    @:native('linc::rtmidi::initErrorCallback')
+    private static function initInternalErrorCallback(cb:cpp.Callable<ErrorType->String->Void>):Void;
 
-    @:native('linc::rtmidi::set_error_callback')
-    private static function set_error_callback(midi:RtMidi):Void;
+    @:native('linc::rtmidi::setErrorCallback')
+    private static function setInternalErrorCallback(midi:RtMidi):Void;
 
-    private inline function on_create(_this:RtMidi):Void {
-        RtMidi_helper.init_error_callback( _this);
+    private inline function onCreate(_this:RtMidi):Void {
+        RtMidiHelper.initErrorCallback(_this);
     }
 }
 
@@ -85,29 +87,30 @@ from Int to Int {
 
 typedef ErrorCallback = ErrorType->String->Void;
 
+    //Internal
 @:allow(rtmidi.RtMidi)
 @:include('linc_rtmidi.h')
-private class RtMidi_helper {
+private class RtMidiHelper {
     static var callback:ErrorCallback = defaultErrorCallback;
-    static var internal_cb_set:Bool = false;
+    static var internalCallbackSet:Bool = false;
 
     static function defaultErrorCallback(type:ErrorType, errorText:String):Void {
         trace('Type: $type, error text: $errorText');
     }
 
-    static function internal_callback(type:ErrorType, errorText:String):Void {
+    static function internalCallback(type:ErrorType, errorText:String):Void {
         callback(type, errorText);
     }
 
-    static function init_error_callback(midi:RtMidi):Void {
-        if(!internal_cb_set) {
-            internal_cb_set = true;
-            @:privateAccess RtMidi.init_error_callback(cpp.Callable.fromStaticFunction(internal_callback));
+    static function initErrorCallback(midi:RtMidi):Void {
+        if(!internalCallbackSet) {
+            internalCallbackSet = true;
+            @:privateAccess RtMidi.initInternalErrorCallback(cpp.Callable.fromStaticFunction(internalCallback));
         }
-        @:privateAccess RtMidi.set_error_callback(midi);
+        @:privateAccess RtMidi.setInternalErrorCallback(midi);
     }
 
-    static function set_error_callback(cb:ErrorCallback):Void {
+    static function setErrorCallback(cb:ErrorCallback):Void {
         if(cb == null) {
             callback = defaultErrorCallback;
         }

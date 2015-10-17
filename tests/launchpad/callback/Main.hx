@@ -1,24 +1,21 @@
 import rtmidi.RtMidiIn;
 import rtmidi.RtMidiOut;
-import rtmidi.RtMidi;
-import rtmidi.RtMidi.ErrorType;
+
+    #if (!mac && !android && !ios && !linux && !windows)
+        #error "You should define a target, please read and modify build.hxml"
+    #end
+
 class Main {
     static function main() {
         var midiin = new RtMidiIn();
         
         var nPorts:Int = midiin.getPortCount();
 
-        midiin.setErrorCallback(cb);
-        var midiout = new RtMidiOut();
-        // midiin.openPort(0);
-        midiout.openPort(0);
-
         if(nPorts == 0)  {
             trace('No input ports available, exiting!');
             midiin.destroy();
             return;
         }
-        
 
         var buttonActivated:Array<Bool> = [for(i in 0...72) false];
 
@@ -56,7 +53,7 @@ class Main {
                 }
                 trace('row: $row, column: $column');
 
-            }, 
+            }, //callback function 
             buttonActivated);
 
         while(!done) {}
@@ -66,37 +63,4 @@ class Main {
         midiout.destroy();
         midiin.destroy();
     } //main
-
-    static function getErrorString(type:ErrorType):String {
-        switch(type) {
-            case WARNING:
-                return 'WARNING';
-            case DEBUG_WARNING:
-                return 'DEBUG_WARNING';
-            case UNSPECIFIED:
-                return 'UNSPECIFIED';
-            case NO_DEVICES_FOUND:
-                return 'NO_DEVICES_FOUND';
-            case INVALID_DEVICE:
-                return 'INVALID_DEVICE';
-            case MEMORY_ERROR:
-                return 'MEMORY_ERROR';
-            case INVALID_PARAMETER:
-                return 'INVALID_PARAMETER';
-            case INVALID_USE:
-                return 'INVALID_USE';
-            case DRIVER_ERROR:
-                return 'DRIVER_ERROR';
-            case SYSTEM_ERROR:
-                return 'SYSTEM_ERROR';
-            case THREAD_ERROR:
-                return 'THREAD_ERROR';
-        }
-
-    }
-
-    static function cb(type:ErrorType, msg:String):Void {
-        trace('${getErrorString(type)}: $msg');
-    }
-
-} //Test
+} //Main

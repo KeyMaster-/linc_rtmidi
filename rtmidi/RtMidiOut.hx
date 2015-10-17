@@ -4,7 +4,7 @@ package rtmidi;
 abstract RtMidiOut(ExternRtMidiOut) {
     inline public function new() {
         this = @:privateAccess ExternRtMidiOut.create();
-        @:privateAccess this.on_create(toRtMidi());
+        @:privateAccess this.onCreate(toRtMidi());
     }
 
     @:from

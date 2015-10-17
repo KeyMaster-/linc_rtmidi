@@ -25,7 +25,7 @@ namespace linc {
             error_fn((int)type, (::String)(errorText.c_str()));
         }
 
-        void init_input_callback(InternalInputCallbackFN fn) {
+        void initInputCallback(InternalInputCallbackFN fn) {
             if(inited_input_callback) return;
 
             input_fn = fn;
@@ -33,12 +33,12 @@ namespace linc {
             inited_input_callback = true;
         }
 
-        void set_input_callback(::cpp::Pointer<RtMidiIn> midiin, int id) {
+        void setInputCallback(::cpp::Pointer<RtMidiIn> midiin, int id) {
             int* _id = new int(id);
             midiin->get_raw()->setCallback(&InternalInputCallback, _id);
         }
 
-        void init_error_callback(InternalErrorCallbackFN fn) {
+        void initErrorCallback(InternalErrorCallbackFN fn) {
             if(inited_error_callback) return;
 
             error_fn = fn;
@@ -46,7 +46,7 @@ namespace linc {
             inited_error_callback = true;
         }
 
-        void set_error_callback(::cpp::Pointer<RtMidi> midi) {
+        void setErrorCallback(::cpp::Pointer<RtMidi> midi) {
             midi->get_raw()->setErrorCallback(&InternalErrorCallback);
         }
         // void 
