@@ -39,10 +39,25 @@ extern class RtMidi {
 
     @:native('get_raw()->isPortOpen')
     function isPortOpen():Bool;
+
+    inline function setErrorCallback(?cb:ErrorCallback):Void {
+        RtMidi_helper.set_error_callback(cb);
+    }
+
+        // Internal
+    @:native('linc::rtmidi::init_error_callback')
+    private static function init_error_callback(cb:cpp.Callable<ErrorType->String->Void>):Void;
+
+    @:native('linc::rtmidi::set_error_callback')
+    private static function set_error_callback(midi:RtMidi):Void;
+
+    private inline function on_create(_this:RtMidi):Void {
+        RtMidi_helper.init_error_callback( _this);
+    }
 }
 
 @:enum
-abstract Api(Int) //:todo: move to own file? Get this to auto-cast somehow?
+abstract Api(Int)
 from Int to Int {
     var UNSPECIFIED    = 0;
     var MACOSX_CORE    = 1;
@@ -50,4 +65,54 @@ from Int to Int {
     var UNIX_JACK      = 3;
     var WINDOWS_MM     = 4;
     var RTMIDI_DUMMY   = 5;
+}
+
+@:enum
+abstract ErrorType(Int)
+from Int to Int {
+    var WARNING = 0;
+    var DEBUG_WARNING = 1;
+    var UNSPECIFIED = 2;
+    var NO_DEVICES_FOUND = 3;
+    var INVALID_DEVICE = 4;
+    var MEMORY_ERROR = 5;
+    var INVALID_PARAMETER = 6;
+    var INVALID_USE = 7;
+    var DRIVER_ERROR = 8;
+    var SYSTEM_ERROR = 9;
+    var THREAD_ERROR = 10;
+}
+
+typedef ErrorCallback = ErrorType->String->Void;
+
+@:allow(rtmidi.RtMidi)
+@:include('linc_rtmidi.h')
+private class RtMidi_helper {
+    static var callback:ErrorCallback = defaultErrorCallback;
+    static var internal_cb_set:Bool = false;
+
+    static function defaultErrorCallback(type:ErrorType, errorText:String):Void {
+        trace('Type: $type, error text: $errorText');
+    }
+
+    static function internal_callback(type:ErrorType, errorText:String):Void {
+        callback(type, errorText);
+    }
+
+    static function init_error_callback(midi:RtMidi):Void {
+        if(!internal_cb_set) {
+            internal_cb_set = true;
+            @:privateAccess RtMidi.init_error_callback(cpp.Callable.fromStaticFunction(internal_callback));
+        }
+        @:privateAccess RtMidi.set_error_callback(midi);
+    }
+
+    static function set_error_callback(cb:ErrorCallback):Void {
+        if(cb == null) {
+            callback = defaultErrorCallback;
+        }
+        else {
+            callback = cb;
+        }
+    }
 }

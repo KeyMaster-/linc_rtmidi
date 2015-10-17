@@ -1,9 +1,10 @@
 package rtmidi;
 
-@:forward(destroy, getCurrentApi, setCallback, cancelCallback, ignoreTypes, getMessage, openPort, openVirtualPort, closePort, isPortOpen, getPortCount, getPortName)
+@:forward(destroy, getCurrentApi, setCallback, cancelCallback, ignoreTypes, getMessage, openPort, openVirtualPort, closePort, isPortOpen, getPortCount, getPortName, setErrorCallback)
 abstract RtMidiIn(ExternRtMidiIn) {
     inline public function new() {
         this = @:privateAccess ExternRtMidiIn.create();
+        @:privateAccess this.on_create(toRtMidi());
     }
 
     @:from
@@ -23,4 +24,5 @@ abstract RtMidiIn(ExternRtMidiIn) {
     public inline function openVirtualPort(portName:String = "RtMidi Input"):Void {
         this.openVirtualPort(portName);
     }
+
 }
