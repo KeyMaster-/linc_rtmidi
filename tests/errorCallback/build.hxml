@@ -2,4 +2,9 @@
 -cpp cpp/
 -cp ../../
 -cmd cpp/Main
--D mac
+
+# Choose a target
+
+#-D mac
+#-D linux
+#-D windows

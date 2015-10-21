@@ -1,5 +1,6 @@
 import rtmidi.RtMidiIn;
 import rtmidi.RtMidiOut;
+import rtmidi.RtMidi;
 
     #if (!mac && !android && !ios && !linux && !windows)
         #error "You should define a target, please read and modify build.hxml"
@@ -8,18 +9,17 @@ import rtmidi.RtMidiOut;
 class Main {
     static function main() {
         var midiin = new RtMidiIn();
-        
-        var nPorts:Int = midiin.getPortCount();
-
-        if(nPorts == 0)  {
-            trace('No input ports available, exiting!');
+        if(!chooseMidiPort(midiin, 'input')) {
             midiin.destroy();
             return;
         }
 
         var midiout = new RtMidiOut();
-        midiin.openPort(0);
-        midiout.openPort(0);
+        if(!chooseMidiPort(midiout, 'output')) {
+            midiin.destroy();
+            midiout.destroy();
+            return;
+        }
 
         var buttonActivated:Array<Bool> = [for(i in 0...72) false];
 
@@ -63,4 +63,42 @@ class Main {
         midiout.destroy();
         midiin.destroy();
     } //main
+
+    static function chooseMidiPort(rtmidi:RtMidi, portTypeString:String):Bool {
+        Sys.print('Would you like to open a virtual $portTypeString port? [y/n] ');
+        var input = Sys.stdin().readLine();
+        if(input == 'y') {
+            rtmidi.openVirtualPort();
+            return true;
+        }
+        Sys.print('\n');
+
+        var i = 0;
+        var nPorts = rtmidi.getPortCount();
+
+        if(nPorts == 0) {
+            Sys.println('No $portTypeString ports available!');
+            return false;
+        }
+
+        if(nPorts == 1) {
+            Sys.println('Opening ${rtmidi.getPortName()}');
+        }
+        else {
+            var portName = '';
+            for(i in 0...nPorts) {
+                portName = rtmidi.getPortName(i);
+                Sys.println('  $portTypeString port #$i: $portName');
+            }
+            do {
+                Sys.print('\nChoose a port number: ');
+                i = Std.parseInt(Sys.stdin().readLine());
+            } while (i >= nPorts);
+        }
+
+        Sys.print('\n');
+        rtmidi.openPort(i);
+
+        return true;
+    }
 } //Main
