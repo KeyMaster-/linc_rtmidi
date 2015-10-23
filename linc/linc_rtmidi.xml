@@ -26,8 +26,8 @@
         </section>
 
         <section if="linux">
-            <vflag name="-lasound" value="" />
-            <vflag name="-lpthread" value="" />
+            <lib name="-lasound" />
+            <lib name="-lpthread" />
         </section>
 
         <section if="windows">

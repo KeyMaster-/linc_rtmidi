@@ -18,7 +18,7 @@ extern class ExternRtMidiIn extends RtMidi {
     @:native('get_raw()->getCurrentApi')
     function getCurrentApi():Api;
 
-    inline function setCallback(cb:InputCallback, userData:Dynamic):Void {
+    inline function setCallback(cb:InputCallback, ?userData:Dynamic):Void {
         RtMidiInHelper.setInputCallback(this, cb, userData);
     }
 

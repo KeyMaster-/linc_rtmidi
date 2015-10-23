@@ -1,6 +1,6 @@
 -main Main.hx
 -cpp cpp/
--cp ../../../
+-cp ../../
 
 # Choose a target
 
