@@ -6,6 +6,7 @@ import rtmidi.RtMidi;
         #error "You should define a target, please read and modify build.hxml"
     #end
 
+    // Example usage of midi input, using the message queue
 class Main {
     static function main() {
         var midiin = new RtMidiIn();

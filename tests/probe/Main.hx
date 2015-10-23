@@ -6,6 +6,7 @@ import rtmidi.RtMidiOut;
         #error "You should define a target, please read and modify build.hxml"
     #end
 
+    // An example displaying available input and output ports.
 class Main {
     static function main() {
         trace('RtMidi version: ' + RtMidi.getVersion());

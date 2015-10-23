@@ -5,6 +5,7 @@ import rtmidi.RtMidiOut;
         #error "You should define a target, please read and modify build.hxml"
     #end
 
+    // Example usage the error callback
 class Main {
     static function main() {
         var midiout = new RtMidiOut();

@@ -6,6 +6,7 @@ import rtmidi.RtMidi;
         #error "You should define a target, please read and modify build.hxml"
     #end
 
+    // A demo for the Launchpad S, using the message queue for input
 class Main {
     static function main() {
         var midiin = new RtMidiIn();
