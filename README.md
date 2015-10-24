@@ -28,4 +28,4 @@ See the `tests` directory. Build with `haxe build.hxml` and run the executable i
 ### Platform notes
 
 - `Linux` - Make sure `libasound2-dev` is installed. This library has been tested on Ubuntu 14.04.3.
-    - using `apt-get libasound2-dev` or equivalent
+    - using `apt-get install libasound2-dev` or equivalent
